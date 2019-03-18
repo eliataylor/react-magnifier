@@ -59,6 +59,8 @@ export default class Magnifier extends PureComponent<Props, State> {
 		height: "auto",
 		className: "",
 
+		triggerEl : this.img,
+
 		// Zoom image
 		zoomFactor: 1.5,
 
@@ -91,12 +93,12 @@ export default class Magnifier extends PureComponent<Props, State> {
 	componentDidMount(): void {
 		// Add mouse/touch event listeners to image element (assigned in render function)
 		// `passive: false` prevents scrolling on touch move
-		this.img.addEventListener("mouseenter", this.onMouseEnter, { passive: false });
-		this.img.addEventListener("mousemove", this.onMouseMove, { passive: false });
-		this.img.addEventListener("mouseout", this.onMouseOut, { passive: false });
-		this.img.addEventListener("touchstart", this.onTouchStart, { passive: false });
-		this.img.addEventListener("touchmove", this.onTouchMove, { passive: false });
-		this.img.addEventListener("touchend", this.onTouchEnd, { passive: false });
+		this.triggerEl.addEventListener("mouseenter", this.onMouseEnter, { passive: false });
+		this.triggerEl.addEventListener("mousemove", this.onMouseMove, { passive: false });
+		this.triggerEl.addEventListener("mouseout", this.onMouseOut, { passive: false });
+		this.triggerEl.addEventListener("touchstart", this.onTouchStart, { passive: false });
+		this.triggerEl.addEventListener("touchmove", this.onTouchMove, { passive: false });
+		this.triggerEl.addEventListener("touchend", this.onTouchEnd, { passive: false });
 
 		// Re-calculate image bounds on window resize
 		window.addEventListener("resize", this.calcImgBoundsDebounced);
@@ -106,12 +108,12 @@ export default class Magnifier extends PureComponent<Props, State> {
 
 	componentWillUnmount(): void {
 		// Remove all event listeners
-		this.img.removeEventListener("mouseenter", this.onMouseEnter);
-		this.img.removeEventListener("mousemove", this.onMouseMove);
-		this.img.removeEventListener("mouseout", this.onMouseOut);
-		this.img.removeEventListener("touchstart", this.onTouchStart);
-		this.img.removeEventListener("touchmove", this.onTouchMove);
-		this.img.removeEventListener("touchend", this.onTouchEnd);
+		this.triggerEl.removeEventListener("mouseenter", this.onMouseEnter);
+		this.triggerEl.removeEventListener("mousemove", this.onMouseMove);
+		this.triggerEl.removeEventListener("mouseout", this.onMouseOut);
+		this.triggerEl.removeEventListener("touchstart", this.onTouchStart);
+		this.triggerEl.removeEventListener("touchmove", this.onTouchMove);
+		this.triggerEl.removeEventListener("touchend", this.onTouchEnd);
 		window.removeEventListener("resize", this.calcImgBoundsDebounced);
 		window.removeEventListener("scroll", this.calcImgBoundsDebounced, true);
 	}
