@@ -3,7 +3,7 @@ import "./style.scss";
 declare type mgShape = "circle" | "square";
 interface Props {
 	src: string;
-	triggerEl: object;
+	triggerEl?: HTMLElement;
 	width?: string | number;
 	height?: string | number;
 	className?: string;

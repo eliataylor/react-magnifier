@@ -128,8 +128,10 @@ const Magnifier = (function(_super) {
 	}
 	Magnifier.prototype.componentDidMount = function() {
 		if (!this.triggerEl) {
-			console.log("USING NEW EVENT TRIGGER: ", this.triggerEl);
-			this.triggerEl = this.img;
+			console.log("USING DEFAULT EVENT TRIGGER: ", this.triggerEl);
+			this.triggerEl = document.body;
+		} else {
+			console.log("USING CUSTOM EVENT TRIGGER: ", this.triggerEl);
 		}
 		this.triggerEl.addEventListener("mouseenter", this.onMouseEnter, { passive: false });
 		this.triggerEl.addEventListener("mousemove", this.onMouseMove, { passive: false });

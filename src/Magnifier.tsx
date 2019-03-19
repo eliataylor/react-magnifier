@@ -8,7 +8,7 @@ type mgShape = "circle" | "square";
 interface Props {
 	// Image
 	src: string;
-	triggerEl: object;
+	triggerEl?: HTMLElement;
 
 	width?: string | number;
 	height?: string | number;
@@ -52,7 +52,7 @@ export default class Magnifier extends PureComponent<Props, State> {
 	};
 
 	img: HTMLElement = null;
-	triggerEl : HTMLElement = null;
+	triggerEl: HTMLElement = null;
 	imgBounds: DOMRect | ClientRect = null;
 
 	static defaultProps = {
@@ -96,8 +96,10 @@ export default class Magnifier extends PureComponent<Props, State> {
 		// Add mouse/touch event listeners to image element (assigned in render function)
 		// `passive: false` prevents scrolling on touch move
 		if (!this.triggerEl) {
-			console.log('USING NEW EVENT TRIGGER: ', this.triggerEl);
-			this.triggerEl = this.img;
+			console.log('USING DEFAULT EVENT TRIGGER: ', this.triggerEl);
+			this.triggerEl = document.body; /// this.img;
+		} else {
+			console.log('USING CUSTOM EVENT TRIGGER: ', this.triggerEl);
 		}
 		this.triggerEl.addEventListener("mouseenter", this.onMouseEnter, { passive: false });
 		this.triggerEl.addEventListener("mousemove", this.onMouseMove, { passive: false });
