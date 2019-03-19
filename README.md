@@ -35,7 +35,7 @@ export default function ExampleComponent() {
 
 | Prop             | Type          | Default    | Description                                                                                                                                                      |
 | ---------------- | ------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src` (required) | String        | –          | URL/path of the large image                                                                                                                                      |
+| `src` (required) | String        | –          | URL/path of the large image                                                                                                                                      | `triggerEl` | HTMLElement | self | The DOM element where mouse & touch events are applied image |
 | `height`         | Number/String | `'auto'`   | Image height (absolute or relative values possible)                                                                                                              |
 | `width`          | Number/String | `'100%'`   | Image width (absolute or relative values possible)                                                                                                               |
 | `className`      | String        | `''`       | Class which will be applied to the image wrapper                                                                                                                 |
