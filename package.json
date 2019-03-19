@@ -79,21 +79,6 @@
 		}
 	},
 	"lint-staged": {
-		"*.js": [
-			"yarn format",
-			"yarn lint:js",
-			"git add"
-		],
-		"*.ts": [
-			"yarn format",
-			"yarn lint:ts",
-			"git add"
-		],
-		"*.scss": [
-			"yarn format",
-			"yarn lint:scss",
-			"git add"
-		],
 		"*.{json,md,yml}": [
 			"yarn format",
 			"git add"
