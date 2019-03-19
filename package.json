@@ -28,7 +28,8 @@
 		"format": "prettier --write",
 		"lint:js": "eslint --fix",
 		"lint:ts": "eslint --ext .tsx --fix",
-		"lint:scss": "stylelint --fix --syntax scss"
+		"lint:scss": "stylelint --fix --syntax scss",
+		"postinstall": "npm run start:rollup"
 	},
 	"dependencies": {
 		"@types/lodash.debounce": "^4.0.6",
