@@ -3,7 +3,7 @@ import "./style.scss";
 declare type mgShape = "circle" | "square";
 interface Props {
 	src: string;
-	triggerEl?: HTMLElement;
+	trigger?: HTMLElement;
 	width?: string | number;
 	height?: string | number;
 	className?: string;
@@ -35,13 +35,13 @@ export default class Magnifier extends PureComponent<Props, State> {
 		relY: number;
 	};
 	img: HTMLElement;
-	triggerEl: HTMLElement;
+	trigger: HTMLElement;
 	imgBounds: DOMRect | ClientRect;
 	static defaultProps: {
 		width: string;
 		height: string;
 		className: string;
-		triggerEl: boolean;
+		trigger: boolean;
 		zoomFactor: number;
 		mgWidth: number;
 		mgHeight: number;

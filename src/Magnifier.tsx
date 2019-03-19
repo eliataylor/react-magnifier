@@ -8,7 +8,7 @@ type mgShape = "circle" | "square";
 interface Props {
 	// Image
 	src: string;
-	triggerEl?: HTMLElement;
+	trigger?: HTMLElement;
 
 	width?: string | number;
 	height?: string | number;
@@ -52,7 +52,7 @@ export default class Magnifier extends PureComponent<Props, State> {
 	};
 
 	img: HTMLElement = null;
-	triggerEl: HTMLElement = null;
+	trigger: HTMLElement = null;
 	imgBounds: DOMRect | ClientRect = null;
 
 	static defaultProps = {
@@ -61,7 +61,7 @@ export default class Magnifier extends PureComponent<Props, State> {
 		height: "auto",
 		className: "",
 
-		triggerEl : false,
+		trigger : false,
 
 		// Zoom image
 		zoomFactor: 1.5,
@@ -95,18 +95,19 @@ export default class Magnifier extends PureComponent<Props, State> {
 	componentDidMount(): void {
 		// Add mouse/touch event listeners to image element (assigned in render function)
 		// `passive: false` prevents scrolling on touch move
-		if (!this.triggerEl) {
-			console.log('USING DEFAULT EVENT TRIGGER: ', this.triggerEl);
-			this.triggerEl = document.body; /// this.img;
+		if (!this.props.trigger) {
+			console.log('USING DEFAULT EVENT TRIGGER: ', this.props.trigger);
+			this.trigger = document.body; /// this.img;
 		} else {
-			console.log('USING CUSTOM EVENT TRIGGER: ', this.triggerEl);
+			this.trigger = this.props.trigger;
+			console.log('USING CUSTOM EVENT TRIGGER: ', this.trigger);
 		}
-		this.triggerEl.addEventListener("mouseenter", this.onMouseEnter, { passive: false });
-		this.triggerEl.addEventListener("mousemove", this.onMouseMove, { passive: false });
-		this.triggerEl.addEventListener("mouseout", this.onMouseOut, { passive: false });
-		this.triggerEl.addEventListener("touchstart", this.onTouchStart, { passive: false });
-		this.triggerEl.addEventListener("touchmove", this.onTouchMove, { passive: false });
-		this.triggerEl.addEventListener("touchend", this.onTouchEnd, { passive: false });
+		this.trigger.addEventListener("mouseenter", this.onMouseEnter, { passive: false });
+		this.trigger.addEventListener("mousemove", this.onMouseMove, { passive: false });
+		this.trigger.addEventListener("mouseout", this.onMouseOut, { passive: false });
+		this.trigger.addEventListener("touchstart", this.onTouchStart, { passive: false });
+		this.trigger.addEventListener("touchmove", this.onTouchMove, { passive: false });
+		this.trigger.addEventListener("touchend", this.onTouchEnd, { passive: false });
 
 		// Re-calculate image bounds on window resize
 		window.addEventListener("resize", this.calcImgBoundsDebounced);
@@ -116,12 +117,12 @@ export default class Magnifier extends PureComponent<Props, State> {
 
 	componentWillUnmount(): void {
 		// Remove all event listeners
-		this.triggerEl.removeEventListener("mouseenter", this.onMouseEnter);
-		this.triggerEl.removeEventListener("mousemove", this.onMouseMove);
-		this.triggerEl.removeEventListener("mouseout", this.onMouseOut);
-		this.triggerEl.removeEventListener("touchstart", this.onTouchStart);
-		this.triggerEl.removeEventListener("touchmove", this.onTouchMove);
-		this.triggerEl.removeEventListener("touchend", this.onTouchEnd);
+		this.trigger.removeEventListener("mouseenter", this.onMouseEnter);
+		this.trigger.removeEventListener("mousemove", this.onMouseMove);
+		this.trigger.removeEventListener("mouseout", this.onMouseOut);
+		this.trigger.removeEventListener("touchstart", this.onTouchStart);
+		this.trigger.removeEventListener("touchmove", this.onTouchMove);
+		this.trigger.removeEventListener("touchend", this.onTouchEnd);
 		window.removeEventListener("resize", this.calcImgBoundsDebounced);
 		window.removeEventListener("scroll", this.calcImgBoundsDebounced, true);
 	}

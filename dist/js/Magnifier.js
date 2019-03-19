@@ -114,7 +114,7 @@ const Magnifier = (function(_super) {
 			relY: 0,
 		};
 		_this.img = null;
-		_this.triggerEl = null;
+		_this.trigger = null;
 		_this.imgBounds = null;
 		_this.onMouseEnter = _this.onMouseEnter.bind(_this);
 		_this.onMouseMove = throttle(_this.onMouseMove.bind(_this), 20, { trailing: false });
@@ -127,28 +127,29 @@ const Magnifier = (function(_super) {
 		return _this;
 	}
 	Magnifier.prototype.componentDidMount = function() {
-		if (!this.triggerEl) {
-			console.log("USING DEFAULT EVENT TRIGGER: ", this.triggerEl);
-			this.triggerEl = document.body;
+		if (!this.props.trigger) {
+			console.log("USING DEFAULT EVENT TRIGGER: ", this.props.trigger);
+			this.trigger = document.body;
 		} else {
-			console.log("USING CUSTOM EVENT TRIGGER: ", this.triggerEl);
+			this.trigger = this.props.trigger;
+			console.log("USING CUSTOM EVENT TRIGGER: ", this.trigger);
 		}
-		this.triggerEl.addEventListener("mouseenter", this.onMouseEnter, { passive: false });
-		this.triggerEl.addEventListener("mousemove", this.onMouseMove, { passive: false });
-		this.triggerEl.addEventListener("mouseout", this.onMouseOut, { passive: false });
-		this.triggerEl.addEventListener("touchstart", this.onTouchStart, { passive: false });
-		this.triggerEl.addEventListener("touchmove", this.onTouchMove, { passive: false });
-		this.triggerEl.addEventListener("touchend", this.onTouchEnd, { passive: false });
+		this.trigger.addEventListener("mouseenter", this.onMouseEnter, { passive: false });
+		this.trigger.addEventListener("mousemove", this.onMouseMove, { passive: false });
+		this.trigger.addEventListener("mouseout", this.onMouseOut, { passive: false });
+		this.trigger.addEventListener("touchstart", this.onTouchStart, { passive: false });
+		this.trigger.addEventListener("touchmove", this.onTouchMove, { passive: false });
+		this.trigger.addEventListener("touchend", this.onTouchEnd, { passive: false });
 		window.addEventListener("resize", this.calcImgBoundsDebounced);
 		window.addEventListener("scroll", this.calcImgBoundsDebounced, true);
 	};
 	Magnifier.prototype.componentWillUnmount = function() {
-		this.triggerEl.removeEventListener("mouseenter", this.onMouseEnter);
-		this.triggerEl.removeEventListener("mousemove", this.onMouseMove);
-		this.triggerEl.removeEventListener("mouseout", this.onMouseOut);
-		this.triggerEl.removeEventListener("touchstart", this.onTouchStart);
-		this.triggerEl.removeEventListener("touchmove", this.onTouchMove);
-		this.triggerEl.removeEventListener("touchend", this.onTouchEnd);
+		this.trigger.removeEventListener("mouseenter", this.onMouseEnter);
+		this.trigger.removeEventListener("mousemove", this.onMouseMove);
+		this.trigger.removeEventListener("mouseout", this.onMouseOut);
+		this.trigger.removeEventListener("touchstart", this.onTouchStart);
+		this.trigger.removeEventListener("touchmove", this.onTouchMove);
+		this.trigger.removeEventListener("touchend", this.onTouchEnd);
 		window.removeEventListener("resize", this.calcImgBoundsDebounced);
 		window.removeEventListener("scroll", this.calcImgBoundsDebounced, true);
 	};
@@ -340,7 +341,7 @@ const Magnifier = (function(_super) {
 		width: "100%",
 		height: "auto",
 		className: "",
-		triggerEl: false,
+		trigger: false,
 		zoomFactor: 1.5,
 		mgWidth: 150,
 		mgHeight: 150,
