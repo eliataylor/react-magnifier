@@ -178,7 +178,7 @@ var Magnifier = (function (_super) {
     Magnifier.prototype.imgHitTest = function (e) {
         if (this.imgBounds) {
             var _a = this.props, mgMouseOffsetX = _a.mgMouseOffsetX, mgMouseOffsetY = _a.mgMouseOffsetY;
-            var target = e.target;
+            var target = this.img;
             var relY = void 0, relX = void 0;
             if (e instanceof TouchEvent) {
                 relX = (e.targetTouches[0].clientX - this.imgBounds.left) / target.clientWidth;
@@ -197,15 +197,15 @@ var Magnifier = (function (_super) {
                     showZoom: true,
                 };
                 this.setState(s);
-                if (this.props.debug > 2)
-                    console.log(s);
+                if (this.props.debug > 1)
+                    console.log('magnifier: hit! relX ' + relX + ', relY ' + relY, e, this.imgBounds);
             }
             else {
                 this.setState({
                     showZoom: false,
                 });
-                if (this.props.debug > 1)
-                    console.log('magnifier: out of bounds relX ' + relX + ', relY ' + relY);
+                if (this.props.debug > 2)
+                    console.log('magnifier: out of bounds relX ' + relX + ', relY ' + relY, e, this.imgBounds);
             }
         }
         else if (this.props.debug > 0) {

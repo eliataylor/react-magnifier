@@ -167,7 +167,8 @@ export default class Magnifier extends PureComponent<Props, State> {
 
 		if (this.imgBounds) {
 			const { mgMouseOffsetX, mgMouseOffsetY } = this.props;
-			const target = e.target as HTMLElement;
+			//const target = e.target as HTMLElement;
+			const target = this.img;
 			let relY, relX;
 			if (e instanceof TouchEvent) {
 				relX = (e.targetTouches[0].clientX - this.imgBounds.left) / target.clientWidth;
@@ -186,12 +187,12 @@ export default class Magnifier extends PureComponent<Props, State> {
 					showZoom: true,
 				};
 				this.setState(s);
-				if (this.props.debug > 2) console.log(s);
+				if (this.props.debug > 1) console.log('magnifier: hit! relX ' + relX + ', relY ' + relY, e, this.imgBounds);
 			} else {
 				this.setState({
 					showZoom: false,
 				});
-				if (this.props.debug > 1) console.log('magnifier: out of bounds relX ' + relX + ', relY ' + relY);
+				if (this.props.debug > 2) console.log('magnifier: out of bounds relX ' + relX + ', relY ' + relY, e, this.imgBounds);
 			}
 		} else if (this.props.debug > 0) {
 			console.log('magnifier: imgBounds undefined?');
