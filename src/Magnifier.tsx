@@ -9,6 +9,7 @@ interface Props {
 	// Image
 	src: string;
 	trigger?: HTMLElement;
+	debug:boolean | number;
 
 	width?: string | number;
 	height?: string | number;
@@ -60,7 +61,7 @@ export default class Magnifier extends PureComponent<Props, State> {
 		width: "100%",
 		height: "auto",
 		className: "",
-
+		debug:false,
 		trigger : false,
 
 		// Zoom image
@@ -96,11 +97,11 @@ export default class Magnifier extends PureComponent<Props, State> {
 		// Add mouse/touch event listeners to image element (assigned in render function)
 		// `passive: false` prevents scrolling on touch move
 		if (!this.props.trigger) {
-			console.log('USING DEFAULT EVENT TRIGGER: ', this.props.trigger);
-			this.trigger = document.body; /// this.img;
+			this.trigger = this.img;
+			if (this.props.debug > -1) console.log('magnifier: Using default event trigger (img)');
 		} else {
 			this.trigger = this.props.trigger;
-			console.log('USING CUSTOM EVENT TRIGGER: ', this.trigger);
+			if (this.props.debug > -1) console.log('magnifier: Using custom event trigger: ', this.trigger);
 		}
 		this.trigger.addEventListener("mouseenter", this.onMouseEnter, { passive: false });
 		this.trigger.addEventListener("mousemove", this.onMouseMove, { passive: false });
@@ -128,6 +129,7 @@ export default class Magnifier extends PureComponent<Props, State> {
 	}
 
 	onMouseEnter(): void {
+		if (this.props.debug > -1) console.log('magnifier: onMouseEnter');
 		this.calcImgBounds();
 	}
 
@@ -138,14 +140,19 @@ export default class Magnifier extends PureComponent<Props, State> {
 			const target = e.target as HTMLElement;
 			const relX = (e.clientX - this.imgBounds.left) / target.clientWidth;
 			const relY = (e.clientY - this.imgBounds.top) / target.clientHeight;
-
-			this.setState({
+			const s = {
 				mgOffsetX: mgMouseOffsetX,
 				mgOffsetY: mgMouseOffsetY,
 				relX,
 				relY,
 				showZoom: true,
-			});
+			};
+			this.setState(s);
+			if (this.props.debug > 1) {
+				console.log(s);
+			}
+		} else if (this.props.debug > 2) {
+			console.log('out of bounds', e);
 		}
 	}
 
@@ -153,11 +160,12 @@ export default class Magnifier extends PureComponent<Props, State> {
 		this.setState({
 			showZoom: false,
 		});
+		if (this.props.debug > -1) console.log('magnifier: onMouseOut');
 	}
 
 	onTouchStart(e: TouchEvent): void {
 		e.preventDefault(); // Prevent mouse event from being fired
-
+		if (this.props.debug > -1) console.log('magnifier: onTouchStart');
 		this.calcImgBounds();
 	}
 
@@ -184,10 +192,13 @@ export default class Magnifier extends PureComponent<Props, State> {
 					showZoom: false,
 				});
 			}
+		} else if (this.props.debug > 2) {
+			console.log('out of bounds', e);
 		}
 	}
 
 	onTouchEnd(): void {
+		if (this.props.debug > -1) console.log('magnifier: onTouchEnd');
 		this.setState({
 			showZoom: false,
 		});
