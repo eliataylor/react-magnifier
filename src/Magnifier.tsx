@@ -98,10 +98,10 @@ export default class Magnifier extends PureComponent<Props, State> {
 		// `passive: false` prevents scrolling on touch move
 		if (!this.props.trigger) {
 			this.trigger = this.img;
-			if (this.props.debug > -1) console.log('magnifier: Using default event trigger (img)');
+			if (this.props.debug > 0) console.log('magnifier: Using default event trigger (img)');
 		} else {
 			this.trigger = this.props.trigger;
-			if (this.props.debug > -1) console.log('magnifier: Using custom event trigger: ', this.trigger);
+			if (this.props.debug > 0) console.log('magnifier: Using custom event trigger: ', this.trigger);
 		}
 		this.trigger.addEventListener("mouseenter", this.onMouseEnter, { passive: false });
 		this.trigger.addEventListener("mousemove", this.onMouseMove, { passive: false });
@@ -128,86 +128,75 @@ export default class Magnifier extends PureComponent<Props, State> {
 		window.removeEventListener("scroll", this.calcImgBoundsDebounced, true);
 	}
 
-	onMouseEnter(): void {
-		if (this.props.debug > -1) console.log('magnifier: onMouseEnter');
+	onMouseEnter(e: MouseEvent): void {
+		if (this.props.debug > 0) console.log('magnifier: onMouseEnter');
 		this.calcImgBounds();
+		this.imgHitTest(e);
 	}
-
-	onMouseMove(e: MouseEvent): void {
-		const { mgMouseOffsetX, mgMouseOffsetY } = this.props;
-
-		if (this.imgBounds) {
-			const target = e.target as HTMLElement;
-			const relX = (e.clientX - this.imgBounds.left) / target.clientWidth;
-			const relY = (e.clientY - this.imgBounds.top) / target.clientHeight;
-			const s = {
-				mgOffsetX: mgMouseOffsetX,
-				mgOffsetY: mgMouseOffsetY,
-				relX,
-				relY,
-				showZoom: true,
-			};
-			this.setState(s);
-			if (this.props.debug > 1) {
-				console.log(s);
-			}
-		} else if (this.props.debug > 2) {
-			console.log('out of bounds', e);
-		}
-	}
-
-	onMouseOut(): void {
-		this.setState({
-			showZoom: false,
-		});
-		if (this.props.debug > -1) console.log('magnifier: onMouseOut');
-	}
-
 	onTouchStart(e: TouchEvent): void {
 		e.preventDefault(); // Prevent mouse event from being fired
-		if (this.props.debug > -1) console.log('magnifier: onTouchStart');
+		if (this.props.debug > 0) console.log('magnifier: onTouchStart');
 		this.calcImgBounds();
 	}
 
-	onTouchMove(e: TouchEvent): void {
-		e.preventDefault(); // Disable scroll on touch
-
-		if (this.imgBounds) {
-			const target = e.target as HTMLElement;
-			const { mgTouchOffsetX, mgTouchOffsetY } = this.props;
-			const relX = (e.targetTouches[0].clientX - this.imgBounds.left) / target.clientWidth;
-			const relY = (e.targetTouches[0].clientY - this.imgBounds.top) / target.clientHeight;
-
-			// Only show magnifying glass if touch is inside image
-			if (relX >= 0 && relY >= 0 && relX <= 1 && relY <= 1) {
-				this.setState({
-					mgOffsetX: mgTouchOffsetX,
-					mgOffsetY: mgTouchOffsetY,
-					relX,
-					relY,
-					showZoom: true,
-				});
-			} else {
-				this.setState({
-					showZoom: false,
-				});
-			}
-		} else if (this.props.debug > 2) {
-			console.log('out of bounds', e);
-		}
+	onMouseOut(e: MouseEvent): void {
+		this.imgHitTest(e);
+		if (this.props.debug > 0) console.log('magnifier: onMouseOut');
+	}
+	onTouchEnd(e: TouchEvent): void {
+		if (this.props.debug > 0) console.log('magnifier: onTouchEnd');
+		this.imgHitTest(e);
 	}
 
-	onTouchEnd(): void {
-		if (this.props.debug > -1) console.log('magnifier: onTouchEnd');
-		this.setState({
-			showZoom: false,
-		});
+
+	onMouseMove(e: MouseEvent): void {
+		this.imgHitTest(e);
+	}
+	onTouchMove(e: TouchEvent): void {
+		e.preventDefault(); // Disable scroll on touch
+		this.imgHitTest(e);
 	}
 
 	calcImgBounds(): void {
 		if (this.img) {
-			this.imgBounds = this.img.getBoundingClientRect();
+			this.imgBounds = this.img.getBoundingClientRect(); // WARN: is this polyfilled?
 		}
+	}
+
+	imgHitTest(e: MouseEvent | TouchEvent): void {
+
+		if (this.imgBounds) {
+			const { mgMouseOffsetX, mgMouseOffsetY } = this.props;
+			const target = e.target as HTMLElement;
+			let relY, relX;
+			if (e instanceof TouchEvent) {
+				relX = (e.targetTouches[0].clientX - this.imgBounds.left) / target.clientWidth;
+				relY = (e.targetTouches[0].clientY - this.imgBounds.top) / target.clientHeight;
+			} else {
+				relX = (e.clientX - this.imgBounds.left) / target.clientWidth;
+				relY = (e.clientY - this.imgBounds.top) / target.clientHeight;
+			}
+
+			if (relX >= 0 && relY >= 0 && relX <= 1 && relY <= 1) {
+				const s = {
+					mgOffsetX: mgMouseOffsetX,
+					mgOffsetY: mgMouseOffsetY,
+					relX,
+					relY,
+					showZoom: true,
+				};
+				this.setState(s);
+				if (this.props.debug > 2) console.log(s);
+			} else {
+				this.setState({
+					showZoom: false,
+				});
+				if (this.props.debug > 1) console.log('magnifier: out of bounds relX ' + relX + ', relY ' + relY);
+			}
+		} else if (this.props.debug > 0) {
+			console.log('magnifier: imgBounds undefined?');
+		}
+
 	}
 
 	calcImgBoundsDebounced: () => void;
